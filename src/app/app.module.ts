@@ -10,7 +10,8 @@ import {
   MatToolbarModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
-  MatPaginatorModule } from '@angular/material';
+  MatPaginatorModule,
+  MatDialogModule } from '@angular/material';
 
 
 import { AppComponent } from './app.component';
@@ -22,7 +23,9 @@ import { LoginComponent } from './auth/login/login.component';
 import { PostsService } from './posts/posts.service';
 import { AppRoutingModule } from './app.routing.module';
 import { SignupComponent } from './auth/signup/signup.component';
-import { AuthInceptor } from './auth/auth-interceptor';
+import { AuthInterceptor } from './auth/auth-interceptor';
+import { ErrorInterceptor } from './error-interceptor';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { AuthInceptor } from './auth/auth-interceptor';
     HeaderComponent,
     PostListComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -46,9 +50,15 @@ import { AuthInceptor } from './auth/auth-interceptor';
     MatToolbarModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
-  providers: [PostsService, {provide: HTTP_INTERCEPTORS, useClass: AuthInceptor, multi: true}],
-  bootstrap: [AppComponent]
+  providers: [PostsService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+  ],
+  bootstrap: [AppComponent],
+  // error component is loaded neither through a selector nor through routing so entryComponents is required
+  entryComponents: [ErrorComponent]
 })
 export class AppModule { }

@@ -51,6 +51,11 @@ router.post("", checkAuth, multer({storage: storage}).single("image"), (req, res
         imagePath: createdPost.imagePath
       }
     });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: 'Creating a post failed!'
+    })
   });
 });
 
@@ -82,6 +87,11 @@ router.get("",(req, res, next) => {
         posts: fetchedPosts,
         maxPosts: count
       });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Fetching posts failed!'
+      });
     });
 
 });
@@ -97,6 +107,11 @@ router.get("/:id", (req, res, next) => {
       })
     }
   })
+  .catch(error => {
+    res.status(500).json({
+      message: 'Fetching post failed!'
+    });
+  });
 });
 
 router.put("/:id", checkAuth, multer({storage: storage}).single("image"), (req, res, next) => {
@@ -123,7 +138,12 @@ router.put("/:id", checkAuth, multer({storage: storage}).single("image"), (req, 
         message: 'Not authorized!'
       });
     }
-
+  })
+  // catch will only be reached if there is a technical issue with the 200 and 401 responses above, for example, the server is down
+  .catch(error => {
+    res.status(500).json({
+      message: "Couldn't update post"
+    })
   });
 });
 
@@ -138,6 +158,11 @@ router.delete("/:id", checkAuth, (req, res, next) => {
         message: 'Not authorized!'
       });
     }
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: 'Deleting post failed!'
+    });
   });
 });
 
